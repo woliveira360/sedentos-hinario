@@ -33,44 +33,44 @@ export function HymnCombobox({ hymns, selectedHymn, onSelect }: HymnComboboxProp
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between h-14 md:h-16 px-4 md:px-6 bg-card border-2 border-border hover:border-primary/50 hover:bg-card text-left font-normal rounded-xl shadow-warm transition-all duration-200"
+          className="w-full justify-between h-9 md:h-10 px-2.5 md:px-3 bg-card border border-border hover:border-primary/50 hover:bg-card text-left font-normal rounded-lg shadow-sm transition-all duration-200"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 min-w-0">
             <div className={cn(
-              "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+              "w-6 h-6 rounded-md flex items-center justify-center shrink-0 transition-colors",
               selectedHymn ? "gradient-burgundy" : "bg-muted"
             )}>
               {selectedHymn ? (
-                <span className="text-primary-foreground font-display font-semibold text-sm">
+                <span className="text-primary-foreground font-display font-semibold text-[10px]">
                   {selectedHymn.number}
                 </span>
               ) : (
-                <Search className="w-5 h-5 text-muted-foreground" />
+                <Search className="w-3.5 h-3.5 text-muted-foreground" />
               )}
             </div>
             <span className={cn(
-              "text-base md:text-lg",
+              "text-sm truncate",
               selectedHymn ? "text-foreground" : "text-muted-foreground"
             )}>
-              {selectedHymn ? `Hino ${selectedHymn.number}` : "Pesquisar hino por número..."}
+              {selectedHymn ? `Hino ${selectedHymn.number}` : "Buscar hino..."}
             </span>
           </div>
-          <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 text-muted-foreground" />
+          <ChevronsUpDown className="ml-1.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-[var(--radix-popover-trigger-width)] p-0 rounded-xl shadow-warm-lg border-2 border-border"
-        align="start"
+        className="w-[min(100vw-2rem,var(--radix-popover-trigger-width))] min-w-[240px] p-0 rounded-xl shadow-warm-lg border border-border"
+        align="end"
       >
         <Command className="rounded-xl">
           <CommandInput 
-            placeholder="Digite o número do hino..." 
-            className="h-12 text-base"
+            placeholder="Número do hino..." 
+            className="h-10 text-sm"
           />
-          <CommandList className="max-h-[300px] md:max-h-[400px]">
-            <CommandEmpty className="py-8 text-center">
-              <Music className="w-10 h-10 mx-auto mb-3 text-muted-foreground/50" />
-              <p className="text-muted-foreground">Nenhum hino encontrado.</p>
+          <CommandList className="max-h-[280px] md:max-h-[360px]">
+            <CommandEmpty className="py-6 text-center">
+              <Music className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground">Nenhum hino encontrado.</p>
             </CommandEmpty>
             <CommandGroup>
               {hymns.map((hymn) => (
@@ -81,22 +81,22 @@ export function HymnCombobox({ hymns, selectedHymn, onSelect }: HymnComboboxProp
                     onSelect(hymn.id === selectedHymn?.id ? null : hymn);
                     setOpen(false);
                   }}
-                  className="py-3 px-4 cursor-pointer"
+                  className="py-2 px-3 cursor-pointer"
                 >
-                  <div className="flex items-center gap-3 flex-1">
+                  <div className="flex items-center gap-2.5 flex-1">
                     <div className={cn(
-                      "w-9 h-9 rounded-lg flex items-center justify-center text-sm font-display font-semibold transition-colors",
+                      "w-7 h-7 rounded-md flex items-center justify-center text-xs font-display font-semibold transition-colors",
                       selectedHymn?.id === hymn.id 
                         ? "gradient-burgundy text-primary-foreground" 
                         : "bg-muted text-muted-foreground"
                     )}>
                       {hymn.number}
                     </div>
-                    <span className="text-base">Hino {hymn.number}</span>
+                    <span className="text-sm">Hino {hymn.number}</span>
                   </div>
                   <Check
                     className={cn(
-                      "ml-auto h-5 w-5 text-primary",
+                      "ml-auto h-4 w-4 text-primary",
                       selectedHymn?.id === hymn.id ? "opacity-100" : "opacity-0"
                     )}
                   />
