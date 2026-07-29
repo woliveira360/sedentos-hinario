@@ -84,7 +84,19 @@ export function ServiceDayMenu({ hymns, onOpenHymn }: ServiceDayMenuProps) {
     [addHymn],
   );
 
-  if (!ready) return null;
+  if (!ready) {
+    return (
+      <Button
+        variant="outline"
+        size="icon"
+        className="relative h-9 w-9 shrink-0 rounded-lg border-border"
+        aria-label="Hinos do culto"
+        disabled
+      >
+        <ListMusic className="h-4 w-4" />
+      </Button>
+    );
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

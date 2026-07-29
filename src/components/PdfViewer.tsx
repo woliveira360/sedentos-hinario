@@ -50,7 +50,7 @@ const ZOOM_STEP = 0.25;
 
 export function PdfViewer({ hymn, onClose }: PdfViewerProps) {
   const [immersive, setImmersive] = useState(true);
-  const [zoom, setZoom] = useState(1.15);
+  const [zoom, setZoom] = useState(1);
   /** Immersive: header starts collapsed */
   const [chromeVisible, setChromeVisible] = useState(false);
   const hideTimer = useRef<number | null>(null);
@@ -117,7 +117,7 @@ export function PdfViewer({ hymn, onClose }: PdfViewerProps) {
   }, [immersive, chromeVisible, hideChrome]);
 
   const enterImmersive = async () => {
-    setZoom(1.15);
+    setZoom(1);
     setImmersive(true);
     try {
       await stageRef.current?.requestFullscreen?.();
@@ -142,7 +142,7 @@ export function PdfViewer({ hymn, onClose }: PdfViewerProps) {
     setZoom((z) => Math.min(MAX_ZOOM, +(z + ZOOM_STEP).toFixed(2)));
   const zoomOut = () =>
     setZoom((z) => Math.max(MIN_ZOOM, +(z - ZOOM_STEP).toFixed(2)));
-  const resetZoom = () => setZoom(immersive ? 1.15 : 1);
+  const resetZoom = () => setZoom(1);
 
   const toolbarInner = (
     <>
@@ -262,11 +262,22 @@ export function PdfViewer({ hymn, onClose }: PdfViewerProps) {
     <div
       ref={stageRef}
       className={cn(
-        "bg-neutral-950",
+        "bg-neutral-950 overflow-hidden",
         immersive
-          ? "fixed inset-0 z-[200] w-screen h-[100dvh]"
+          ? "fixed inset-0 z-[200] h-[100dvh] w-full max-w-[100vw]"
           : "relative flex h-full flex-col pdf-viewer-container animate-scale-in",
       )}
+      style={
+        immersive
+          ? {
+              // iPad/Safari: avoid 100vw overflow that clips the right edge
+              width: "100%",
+              maxWidth: "100%",
+              paddingLeft: "env(safe-area-inset-left, 0px)",
+              paddingRight: "env(safe-area-inset-right, 0px)",
+            }
+          : undefined
+      }
     >
       {/* Non-immersive: normal in-flow header */}
       {!immersive && (
@@ -300,6 +311,10 @@ export function PdfViewer({ hymn, onClose }: PdfViewerProps) {
               "absolute inset-x-0 top-0 z-[220] flex items-center justify-between gap-2 border-b border-border bg-card/95 px-3 py-2 shadow-lg backdrop-blur-sm transition-transform duration-300 ease-out md:px-4",
               chromeVisible ? "translate-y-0" : "-translate-y-full pointer-events-none",
             )}
+            style={{
+              paddingLeft: "max(0.75rem, env(safe-area-inset-left, 0px))",
+              paddingRight: "max(0.75rem, env(safe-area-inset-right, 0px))",
+            }}
             onPointerDown={(e) => {
               e.stopPropagation();
               showChrome();
@@ -312,34 +327,26 @@ export function PdfViewer({ hymn, onClose }: PdfViewerProps) {
 
       <div
         className={cn(
-          "overflow-auto bg-neutral-950 touch-pan-x touch-pan-y",
+          "bg-neutral-950 overflow-auto overscroll-contain touch-pan-x touch-pan-y",
           immersive ? "absolute inset-0" : "relative min-h-0 flex-1",
         )}
       >
         <div
-          className="origin-top-left transition-[width,height] duration-150"
+          className="transition-[width,height] duration-150"
           style={{
             width: `${zoom * 100}%`,
             height: `${zoom * 100}%`,
             minWidth: "100%",
-            minHeight: "100%",
+            minHeight: immersive ? "100dvh" : "100%",
           }}
         >
-          <div className="relative h-full w-full overflow-hidden">
-            <iframe
-              src={embedUrl}
-              className="absolute border-0 bg-neutral-950"
-              style={{
-                top: 0,
-                left: immersive ? "-1%" : 0,
-                width: immersive ? "102%" : "100%",
-                height: immersive ? "104%" : "100%",
-              }}
-              title={`Hino ${hymn.number}`}
-              allow="autoplay; fullscreen"
-              allowFullScreen
-            />
-          </div>
+          <iframe
+            src={embedUrl}
+            className="block h-full w-full max-w-full border-0 bg-neutral-950"
+            title={`Hino ${hymn.number}`}
+            allow="autoplay; fullscreen"
+            allowFullScreen
+          />
         </div>
       </div>
     </div>

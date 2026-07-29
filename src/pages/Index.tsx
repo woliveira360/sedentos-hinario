@@ -3,6 +3,7 @@ import { HymnCombobox } from "@/components/HymnCombobox";
 import { PdfViewer } from "@/components/PdfViewer";
 import { EmptyState } from "@/components/EmptyState";
 import { ServiceDayMenu } from "@/components/ServiceDayMenu";
+import { OnboardingTour } from "@/components/OnboardingTour";
 import { parseHymns } from "@/lib/hymns";
 import type { ParsedHymn } from "@/types/hymn";
 
@@ -13,6 +14,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <OnboardingTour />
+
       <header className="shrink-0 border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container max-w-6xl mx-auto px-4 py-2 md:py-2.5">
           <div className="flex items-center gap-2 md:gap-3">
@@ -28,12 +31,16 @@ const Index = () => {
             </span>
 
             <div className="flex flex-1 min-w-0 items-center gap-2 max-w-md ml-auto">
-              <HymnCombobox
-                hymns={hymns}
-                selectedHymn={selectedHymn}
-                onSelect={setSelectedHymn}
-              />
-              <ServiceDayMenu hymns={hymns} onOpenHymn={setSelectedHymn} />
+              <div data-tour="search" className="min-w-0 flex-1">
+                <HymnCombobox
+                  hymns={hymns}
+                  selectedHymn={selectedHymn}
+                  onSelect={setSelectedHymn}
+                />
+              </div>
+              <div data-tour="culto" className="shrink-0">
+                <ServiceDayMenu hymns={hymns} onOpenHymn={setSelectedHymn} />
+              </div>
             </div>
           </div>
         </div>
